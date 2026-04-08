@@ -339,6 +339,9 @@ public partial class Player : Entity
     [NotMapped, JsonIgnore]
     public bool IsInParty => Party != null && Party.Count > 1;
 
+    [JsonIgnore, NotMapped]
+    public List<Npc> FollowerNpcs { get; set; } = new List<Npc>();
+
     public static Player FindOnline(Guid id)
     {
         return OnlinePlayersById.ContainsKey(id) ? OnlinePlayersById[id] : null;
@@ -546,7 +549,15 @@ public partial class Player : Entity
             }
         }
 
+        // Stop all follower NPCs
+        foreach (var follower in FollowerNpcs.ToArray())
+        {
+            follower?.ClearFollowTarget();
+        }
+        FollowerNpcs.Clear();
+
         SpawnedNpcs.Clear();
+
 
         lock (mEventLock)
         {
@@ -7765,6 +7776,24 @@ public partial class Player : Entity
         }
 
         return false;
+    }
+
+    public void AddFollowerNpc(Npc npc)
+    {
+        if (npc == null || !npc.Descriptor.Followable) return;
+        npc.SetFollowTarget(this);
+        if (!FollowerNpcs.Contains(npc))
+        {
+            FollowerNpcs.Add(npc);
+        }
+    }
+
+    public void RemoveFollowerNpc(Npc npc)
+    {
+        if (FollowerNpcs.Remove(npc))
+        {
+            npc?.ClearFollowTarget();
+        }
     }
 
     //TODO: Clean all of this stuff up

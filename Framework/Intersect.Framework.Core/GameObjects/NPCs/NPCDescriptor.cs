@@ -84,6 +84,13 @@ public partial class NPCDescriptor : DatabaseObject<NPCDescriptor>, IFolderable
     [NotMapped]
     public ConditionLists PlayerFriendConditions { get; set; } = new();
 
+    // --- Follower Settings ---
+    /// <summary>Whether this NPC can be assigned to follow a player.</summary>
+    public bool Followable { get; set; } = false;
+
+    /// <summary>How many tiles away before the NPC teleports to catch up.</summary>
+    public int FollowTeleportRange { get; set; } = 10;
+
     [NotMapped, JsonIgnore]
     public int[] Stats
     {

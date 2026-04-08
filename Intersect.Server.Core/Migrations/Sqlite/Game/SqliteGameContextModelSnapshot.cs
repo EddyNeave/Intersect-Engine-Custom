@@ -457,6 +457,12 @@ namespace Intersect.Server.Migrations.Sqlite.Game
                     b.Property<string>("Folder")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("Followable")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FollowTeleportRange")
+                        .HasColumnType("INTEGER");
+                        
                     b.Property<string>("ImmunitiesJson")
                         .HasColumnType("TEXT")
                         .HasColumnName("Immunities");

@@ -26,7 +26,26 @@ namespace Intersect.Server.Entities;
 
 public partial class Npc : Entity
 {
+    /// <summary>
+    /// When set, this NPC will follow this player instead of using normal AI.
+    /// </summary>
+    public Player FollowTarget { get; set; } = null;
 
+    public void SetFollowTarget(Player player)
+    {
+        FollowTarget = player;
+        // Clear any combat state so it doesn't fight while following
+        RemoveTarget();
+        AggroCenterMap = null;
+        mResetting = false;
+        mPathFinder.SetTarget(null);
+    }
+
+    public void ClearFollowTarget()
+    {
+        FollowTarget = null;
+        mPathFinder.SetTarget(null);
+    }
     //Spell casting
     public long CastFreq;
 
@@ -167,6 +186,7 @@ public partial class Npc : Entity
 
     public override void Die(bool generateLoot = true, Entity killer = null)
     {
+        ClearFollowTarget();
         lock (EntityLock)
         {
             base.Die(generateLoot, killer);
@@ -836,7 +856,13 @@ public partial class Npc : Entity
                     var targetX = 0;
                     var targetY = 0;
                     var targetZ = 0;
-
+                    
+                    if (FollowTarget != null)
+                    {
+                        UpdateFollowBehavior(timeMs);
+                        return; // Skip all combat/wander AI
+                    }
+                    
                     if (tempTarget != null && (tempTarget.IsDead || !InRangeOf(tempTarget, Options.Instance.Map.MapWidth * 2) || !CanTarget(tempTarget)))
                     {
                         _ = TryFindNewTarget(Timing.Global.Milliseconds, tempTarget.Id, !CanTarget(tempTarget));
@@ -1214,6 +1240,62 @@ public partial class Npc : Entity
         }
     }
 
+    //Follow player movement
+    private void UpdateFollowBehavior(long timeMs)
+    {
+        var target = FollowTarget;
+
+        // Validate - stop following if player is gone/dead/different instance
+        if (target == null || target.IsDisposed || target.IsDead || target.MapInstanceId != MapInstanceId)
+        {
+            ClearFollowTarget();
+            return;
+        }
+
+        var dist = GetDistanceTo(target.Map, target.X, target.Y);
+
+        // Teleport if too far (map change or player ran ahead)
+        if (dist > Descriptor.FollowTeleportRange)
+        {
+            // Find a free adjacent tile near the player
+            Warp(target.MapId, target.X, target.Y, target.Dir);
+            mPathFinder.SetTarget(null);
+            return;
+        }
+
+        // Already adjacent — just face the player, no movement needed
+        if (dist <= 1)
+        {
+            var dir = DirectionToTarget(target);
+            if (dir != Direction.None)
+            {
+                ChangeDir(dir);
+            }
+            return;
+        }
+
+        // Pathfind toward the player
+        var pathTarget = mPathFinder.GetTarget();
+        if (pathTarget == null || pathTarget.TargetMapId != target.MapId ||
+            pathTarget.TargetX != target.X || pathTarget.TargetY != target.Y)
+        {
+            mPathFinder.SetTarget(new PathfinderTarget(target.MapId, target.X, target.Y, target.Z));
+        }
+
+        var result = mPathFinder.Update(timeMs);
+        if (result.Type == PathfinderResultType.Success)
+        {
+            var nextDir = mPathFinder.GetMove();
+            if (nextDir > Direction.None)
+            {
+                // Don't move into the player's exact tile
+                if (dist > 1 && CanMoveInDirection(nextDir, out _, out _))
+                {
+                    Move(nextDir, null);
+                }
+            }
+        }
+    }
     private void MoveRandomly()
     {
         if (_randomMoveRange <= 0)

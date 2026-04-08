@@ -1677,6 +1677,16 @@ public static partial class CommandPrinter
         return Strings.EventCommandList.invalid;
     }
 
+    private static string GetCommandText(StartNpcFollowCommand command, MapInstance map)
+    {
+        return "NPC Follow: Start Following Player";
+    }
+
+    private static string GetCommandText(StopNpcFollowCommand command, MapInstance map)
+    {
+        return "NPC Follow: Stop All Followers";
+    }
+
     private static string GetVariableModText(SetVariableCommand command, StringVariableMod mod)
     {
         var varvalue = string.Empty;

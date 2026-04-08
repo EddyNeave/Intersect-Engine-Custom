@@ -74,9 +74,11 @@ namespace Intersect.Editor.Forms.Editors.Events
             var releasePlayerTreeNode = new TreeNode("Release Player");
             var spawnNPCTreeNode = new TreeNode("Spawn NPC");
             var despawnNPCTreeNode = new TreeNode("Despawn NPC");
+            var startNpcFollowTreeNode = new TreeNode("NPC Follow: Start");
+            var stopNpcFollowTreeNode = new TreeNode("NPC Follow: Stop");
             var hidePlayerTreeNode = new TreeNode("Hide Player");
             var showPlayerTreeNode = new TreeNode("Show Player");
-            var movementTreeNode = new TreeNode("Movement", new TreeNode[] { warpPlayerTreeNode, setMoveRouteTreeNode, waitForRouteCompleteTreeNode, holdPlayerTreeNode, releasePlayerTreeNode, spawnNPCTreeNode, despawnNPCTreeNode, hidePlayerTreeNode, showPlayerTreeNode });
+            var movementTreeNode = new TreeNode("Movement", new TreeNode[] { warpPlayerTreeNode, setMoveRouteTreeNode, waitForRouteCompleteTreeNode, holdPlayerTreeNode, releasePlayerTreeNode, spawnNPCTreeNode, despawnNPCTreeNode, startNpcFollowTreeNode, stopNpcFollowTreeNode, hidePlayerTreeNode, showPlayerTreeNode });
             var playAnimationTreeNode = new TreeNode("Play Animation");
             var playBGMTreeNode = new TreeNode("Play BGM");
             var fadeoutBGMTreeNode = new TreeNode("Fadeout BGM");
@@ -950,6 +952,12 @@ namespace Intersect.Editor.Forms.Editors.Events
             despawnNPCTreeNode.Name = "despawnnpcs";
             despawnNPCTreeNode.Tag = (int)EventCommandType.DespawnNpc;
             despawnNPCTreeNode.Text = "Despawn NPC";
+            startNpcFollowTreeNode.Name = "startnpcfollow";
+            startNpcFollowTreeNode.Tag = (int)EventCommandType.StartNpcFollow;
+            startNpcFollowTreeNode.Text = "NPC Follow: Start";
+            stopNpcFollowTreeNode.Name = "stopnpcfollow";
+            stopNpcFollowTreeNode.Tag = (int)EventCommandType.StopNpcFollow;
+            stopNpcFollowTreeNode.Text = "NPC Follow: Stop";
             hidePlayerTreeNode.Name = "hideplayer";
             hidePlayerTreeNode.Tag = (int)EventCommandType.HidePlayer;
             hidePlayerTreeNode.Text = "Hide Player";

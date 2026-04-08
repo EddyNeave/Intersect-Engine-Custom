@@ -685,8 +685,16 @@ public partial class FrmEvent : Form
                 break;
             case EventCommandType.DespawnNpc:
                 tmpCommand = new DespawnNpcCommand();
-
                 break;
+
+            case EventCommandType.StartNpcFollow:
+                tmpCommand = new StartNpcFollowCommand();
+                break;
+                
+            case EventCommandType.StopNpcFollow:
+                tmpCommand = new StopNpcFollowCommand();
+                break;
+
             case EventCommandType.StartQuest:
                 tmpCommand = new StartQuestCommand(CurrentPage.CommandLists);
 

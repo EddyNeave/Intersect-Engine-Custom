@@ -965,6 +965,38 @@ public static partial class CommandProcessing
         player.SpawnedNpcs.Clear();
     }
 
+    private static void ProcessCommand(
+        StartNpcFollowCommand command,
+        Player player,
+        Event instance,
+        CommandInstance stackInfo,
+        Stack<CommandInstance> callStack
+    )
+    {
+        var npc = player.SpawnedNpcs
+            .OfType<Npc>()
+            .LastOrDefault(n => !n.IsDisposed && n.Despawnable && n.Descriptor.Followable && n.FollowTarget == null);
+
+        if (npc != null)
+        {
+            player.AddFollowerNpc(npc);
+        }
+    }
+
+    private static void ProcessCommand(
+        StopNpcFollowCommand command,
+        Player player,
+        Event instance,
+        CommandInstance stackInfo,
+        Stack<CommandInstance> callStack
+    )
+    {
+        foreach (var follower in player.FollowerNpcs.ToArray())
+        {
+            player.RemoveFollowerNpc(follower);
+        }
+    }
+
     //Play Animation Command
     private static void ProcessCommand(
         PlayAnimationCommand command,

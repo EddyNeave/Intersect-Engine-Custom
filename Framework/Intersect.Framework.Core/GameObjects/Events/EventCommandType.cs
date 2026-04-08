@@ -136,4 +136,7 @@ public enum EventCommandType
     CastSpellOn,
 
     Fade,
+
+    StartNpcFollow,
+    StopNpcFollow,
 }
