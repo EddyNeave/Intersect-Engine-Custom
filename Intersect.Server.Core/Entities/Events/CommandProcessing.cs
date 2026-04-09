@@ -993,8 +993,15 @@ public static partial class CommandProcessing
     {
         foreach (var follower in player.FollowerNpcs.ToArray())
         {
-            player.RemoveFollowerNpc(follower);
+            if (follower != null && !follower.IsDisposed)
+            {
+                lock (player.EntityLock)
+                {
+                    follower.Die();
+                }
+            }
         }
+        player.FollowerNpcs.Clear();
     }
 
     //Play Animation Command
