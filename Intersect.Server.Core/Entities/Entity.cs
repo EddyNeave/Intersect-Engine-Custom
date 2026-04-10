@@ -3008,6 +3008,60 @@ public abstract partial class Entity : IEntity
         return yPositive ? Direction.UpRight : Direction.DownRight;
     }
 
+    /// <summary>
+    /// Returns the direction from this entity toward a specific map coordinate.
+    /// </summary>
+    protected Direction DirectionTo(MapController targetMap, int targetX, int targetY)
+    {
+        if (targetMap == null || IsTurnAroundWhileCastingDisabled)
+        {
+            return Dir;
+        }
+
+        if (!MapController.TryGet(MapId, out var originMap))
+        {
+            return Dir;
+        }
+
+        var originX = X + originMap.MapGridX * Options.Instance.Map.MapWidth;
+        var originY = Y + originMap.MapGridY * Options.Instance.Map.MapHeight;
+        var destX   = targetX + targetMap.MapGridX * Options.Instance.Map.MapWidth;
+        var destY   = targetY + targetMap.MapGridY * Options.Instance.Map.MapHeight;
+
+        var dx = destX - originX;
+        var dy = destY - originY;
+
+        if (dx == 0 && dy == 0)
+        {
+            return Dir;
+        }
+
+        if (dx == 0)
+        {
+            return dy > 0 ? Direction.Up : Direction.Down;
+        }
+
+        if (dy == 0)
+        {
+            return dx > 0 ? Direction.Right : Direction.Left;
+        }
+
+        if (!Options.Instance.Map.EnableDiagonalMovement)
+        {
+            return Math.Abs(dx) >= Math.Abs(dy)
+                ? (dx > 0 ? Direction.Right : Direction.Left)
+                : (dy > 0 ? Direction.Down : Direction.Up);
+        }
+
+        return (dx > 0, dy > 0) switch
+        {
+            (true,  true)  => Direction.DownRight,
+            (true,  false) => Direction.UpRight,
+            (false, true)  => Direction.DownLeft,
+            (false, false) => Direction.UpLeft,
+        };
+    }
+
     protected bool IsOneBlockAway(Guid mapId, int x, int y, int z = 0)
     {
         if (z != Z)

@@ -535,6 +535,11 @@ public partial class MapInstance : IMapInstance
                 MapInstanceId = processLayer
             };
 
+            // Store spawn location for wander boundary
+            npc.SpawnMap = mMapController;
+            npc.SpawnX = tileX;
+            npc.SpawnY = tileY;
+            
             AddEntity(npc);
             PacketSender.SendEntityDataToProximity(npc);
 

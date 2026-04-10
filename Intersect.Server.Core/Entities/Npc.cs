@@ -89,6 +89,10 @@ public partial class Npc : Entity
     //Moving
     public long LastRandomMove;
     private byte _randomMoveRange;
+    
+    public MapController SpawnMap;
+    public int SpawnX;
+    public int SpawnY;
 
     //Pathfinding
     private Pathfinder mPathFinder;
@@ -1310,13 +1314,47 @@ public partial class Npc : Entity
             }
         }
     }
+
     private void MoveRandomly()
     {
         if (_randomMoveRange <= 0)
         {
-            Dir = Randomization.NextDirection();
+            if (SpawnMap != null)
+            {
+                // Pick a random target tile within wander radius of spawn
+                var wanderRadius = Descriptor.ResetRadius > 0 ? Descriptor.ResetRadius : Descriptor.SightRange;
+                wanderRadius = Math.Max(1, wanderRadius);
+
+                var targetX = SpawnX + Randomization.Next(-wanderRadius, wanderRadius + 1);
+                var targetY = SpawnY + Randomization.Next(-wanderRadius, wanderRadius + 1);
+
+                // Clamp to map bounds
+                targetX = Math.Clamp(targetX, 0, Options.Instance.Map.MapWidth - 1);
+                targetY = Math.Clamp(targetY, 0, Options.Instance.Map.MapHeight - 1);
+
+                // Get direction toward that target
+                var dx = targetX - X;
+                var dy = targetY - Y;
+
+                if (dx == 0 && dy == 0)
+                {
+                    Dir = Randomization.NextDirection();
+                }
+                else
+                {
+                    Dir = DirectionTo(SpawnMap, targetX, targetY);
+                }
+
+                _randomMoveRange = (byte)Math.Max(1, Randomization.Next(1, wanderRadius + 1));
+            }
+            else
+            {
+                // No spawn map, fall back to original behaviour
+                Dir = Randomization.NextDirection();
+                _randomMoveRange = (byte)Math.Max(1, Randomization.Next(1, Descriptor.SightRange + Randomization.Next(0, 3)));
+            }
+
             LastRandomMove = Timing.Global.Milliseconds + Randomization.Next(1000, 2000);
-            _randomMoveRange = (byte)Randomization.Next(0, Descriptor.SightRange + Randomization.Next(0, 3));
         }
         else if (CanMoveInDirection(Dir))
         {
@@ -1324,6 +1362,33 @@ public partial class Npc : Entity
             {
                 if (status.Type is SpellEffect.Stun or SpellEffect.Snare or SpellEffect.Sleep)
                 {
+                    return;
+                }
+            }
+
+            // Check radius before each step
+            var wanderRadius = Math.Max(1, Descriptor.ResetRadius > 0 ? Descriptor.ResetRadius : Descriptor.SightRange);
+            if (SpawnMap != null)
+            {
+                var nextX = X;
+                var nextY = Y;
+
+                switch (Dir)
+                {
+                    case Direction.Up:       nextY--; break;
+                    case Direction.Down:     nextY++; break;
+                    case Direction.Left:     nextX--; break;
+                    case Direction.Right:    nextX++; break;
+                    case Direction.UpLeft:   nextY--; nextX--; break;
+                    case Direction.UpRight:  nextY--; nextX++; break;
+                    case Direction.DownLeft: nextY++; nextX--; break;
+                    case Direction.DownRight:nextY++; nextX++; break;
+                }
+
+                if (GetDistanceBetween(SpawnMap, SpawnMap, SpawnX, nextX, SpawnY, nextY) > wanderRadius)
+                {
+                    Dir = DirectionTo(SpawnMap, SpawnX, SpawnY);
+                    _randomMoveRange = 0;
                     return;
                 }
             }
