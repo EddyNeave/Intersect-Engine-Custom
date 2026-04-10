@@ -4584,6 +4584,10 @@ Tick timer saved in server config.json.";
             {1, @"Turn Randomly"},
             {2, @"Stand Still"},
             {3, @"Static"},
+            {4, @"Horizontal Patrol"},
+            {5, @"Vertical Patrol"},
+            {6, @"Backslash Patrol (\)"},
+            {7, @"Forwardslash Patrol (/)"},
         };
 
         public static LocalizedString mpregen = @"MP (%):";

@@ -1146,6 +1146,7 @@ public partial class Player : Entity
             {
                 if (entity is Npc npc)
                 {
+                    npc.RemoveTarget();
                     npc.RemoveFromDamageMap(this);
                 }
             }
