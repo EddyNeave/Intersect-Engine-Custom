@@ -3,7 +3,7 @@ using MessagePack;
 
 namespace Intersect.Framework.Core.Network.Packets.Security;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class ActivePermissionSetPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

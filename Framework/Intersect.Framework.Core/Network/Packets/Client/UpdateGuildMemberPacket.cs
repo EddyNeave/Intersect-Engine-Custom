@@ -3,7 +3,7 @@ using MessagePack;
 
 namespace Intersect.Network.Packets.Client;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class UpdateGuildMemberPacket : IntersectPacket
 {
     /// <summary>

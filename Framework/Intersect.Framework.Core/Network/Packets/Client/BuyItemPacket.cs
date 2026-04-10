@@ -2,7 +2,7 @@
 
 namespace Intersect.Network.Packets.Client;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public class BuyItemPacket : SlotQuantityPacket
 {
     //Parameterless Constructor for MessagePack

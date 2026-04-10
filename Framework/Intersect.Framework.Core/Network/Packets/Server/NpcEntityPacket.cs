@@ -3,7 +3,7 @@ using MessagePack;
 
 namespace Intersect.Network.Packets.Server;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class NpcEntityPacket : EntityPacket
 {
     //Parameterless Constructor for MessagePack

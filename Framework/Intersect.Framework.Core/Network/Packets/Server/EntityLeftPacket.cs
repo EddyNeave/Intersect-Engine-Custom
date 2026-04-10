@@ -3,7 +3,7 @@ using MessagePack;
 
 namespace Intersect.Network.Packets.Server;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class EntityLeftPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

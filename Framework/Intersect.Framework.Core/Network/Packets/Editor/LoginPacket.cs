@@ -4,7 +4,7 @@ namespace Intersect.Network.Packets.Editor;
 
 
 //We inherit from CerasPacket here instead of EditorPacket because admin rights are not loaded until you successfully login.
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class LoginPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

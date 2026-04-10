@@ -3,7 +3,7 @@ using Intersect.Enums;
 
 namespace Intersect.Network.Packets.Client;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class MovePacket : AbstractTimedPacket
 {
     //Parameterless Constructor for MessagePack

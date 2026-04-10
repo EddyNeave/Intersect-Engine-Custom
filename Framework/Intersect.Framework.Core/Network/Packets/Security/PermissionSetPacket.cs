@@ -4,7 +4,7 @@ using MessagePack;
 
 namespace Intersect.Framework.Core.Network.Packets.Security;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class PermissionSetPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

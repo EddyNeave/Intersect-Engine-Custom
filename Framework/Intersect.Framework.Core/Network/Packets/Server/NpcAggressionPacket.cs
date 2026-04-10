@@ -3,7 +3,7 @@ using Intersect.Enums;
 
 namespace Intersect.Network.Packets.Server;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class NpcAggressionPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

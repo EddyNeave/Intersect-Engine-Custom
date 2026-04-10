@@ -4,7 +4,7 @@ using MessagePack;
 
 namespace Intersect.Network.Packets.Server;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class EventEntityPacket : EntityPacket
 {
     //Parameterless Constructor for MessagePack

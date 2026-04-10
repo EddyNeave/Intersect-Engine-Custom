@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Intersect.Network.Packets;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class HailPacket : ConnectionPacket
 {
     [IgnoreMember]

@@ -4,7 +4,7 @@ using Intersect.Framework.Core.GameObjects.Animations;
 
 namespace Intersect.Network.Packets.Server;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class PlayAnimationPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

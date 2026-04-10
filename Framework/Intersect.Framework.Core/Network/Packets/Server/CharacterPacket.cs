@@ -12,7 +12,7 @@ public partial class EquipmentFragment
     public Color RenderColor { get; set; }
 }
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class CharacterPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

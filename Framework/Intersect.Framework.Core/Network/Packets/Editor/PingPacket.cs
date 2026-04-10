@@ -3,7 +3,7 @@
 namespace Intersect.Network.Packets.Editor;
 
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class PingPacket : IntersectPacket
 {
 

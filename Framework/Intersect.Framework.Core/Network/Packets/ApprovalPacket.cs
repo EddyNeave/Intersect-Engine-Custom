@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Intersect.Network.Packets;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public class ApprovalPacket : ConnectionPacket
 {
     [IgnoreMember] private const int SIZE_AES_KEY = 32;

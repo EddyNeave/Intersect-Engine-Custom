@@ -2,7 +2,7 @@ using MessagePack;
 
 namespace Intersect.Network.Packets.Unconnected.Client;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class ServerStatusRequestPacket : UnconnectedRequestPacket
 {
     [SerializationConstructor]

@@ -5,7 +5,7 @@ using MessagePack;
 namespace Intersect.Network.Packets.Client;
 
 [GenericPacketTypeArguments(typeof(MapDescriptor))]
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class GetObjectData<TGameObject> : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

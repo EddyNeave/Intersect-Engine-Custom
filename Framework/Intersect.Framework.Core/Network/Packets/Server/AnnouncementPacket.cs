@@ -7,7 +7,7 @@ namespace Intersect.Network.Packets.Server;
 /// <summary>
 /// Defines the layout for an AnnouncementPacket.
 /// </summary>
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class AnnouncementPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

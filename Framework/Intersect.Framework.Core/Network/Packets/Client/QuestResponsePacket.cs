@@ -2,7 +2,7 @@
 
 namespace Intersect.Network.Packets.Client;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class QuestResponsePacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

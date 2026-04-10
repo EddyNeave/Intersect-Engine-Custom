@@ -2,7 +2,7 @@
 
 namespace Intersect.Network.Packets.Server;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class MapAreaPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack
@@ -20,7 +20,7 @@ public partial class MapAreaPacket : IntersectPacket
 
 }
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class MapAreaIdsPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

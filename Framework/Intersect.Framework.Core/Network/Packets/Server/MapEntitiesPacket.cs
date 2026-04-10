@@ -2,7 +2,7 @@
 
 namespace Intersect.Network.Packets.Server;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class MapEntitiesPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack

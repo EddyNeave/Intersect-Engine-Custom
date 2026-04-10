@@ -6,7 +6,7 @@ namespace Intersect.Network.Packets.Server;
 /// <summary>
 /// The definition of the GuildPacket sent to a player containing the online and offline members of their guilds.
 /// </summary>
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class GuildPacket : IntersectPacket
 {
     /// <summary>

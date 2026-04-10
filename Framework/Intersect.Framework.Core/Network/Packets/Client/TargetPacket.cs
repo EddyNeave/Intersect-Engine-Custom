@@ -2,7 +2,7 @@ using MessagePack;
 
 namespace Intersect.Network.Packets.Client;
 
-[MessagePackObject]
+[MessagePackObject(AllowPrivate = true)]
 public partial class TargetPacket : IntersectPacket
 {
     //Parameterless Constructor for MessagePack
