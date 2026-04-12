@@ -62,6 +62,8 @@ public partial class EventCommandVariable : UserControl
         optNumericSystemTime.Text = Strings.EventSetVariable.numericsystemtime;
         lblNumericRandomLow.Text = Strings.EventSetVariable.numericrandomlow;
         lblNumericRandomHigh.Text = Strings.EventSetVariable.numericrandomhigh;
+        optNumericExpression.Text = Strings.EventSetVariable.numericexpression;
+        lblExpressionHint.Text = Strings.EventSetVariable.numericexpressionhint;
 
         //Booleanic
         grpBooleanVariable.Text = Strings.EventSetVariable.booleanlabel;
@@ -251,12 +253,17 @@ public partial class EventCommandVariable : UserControl
     private void TryLoadNumericMod(VariableMod variableMod)
     {
         if (variableMod == null)
-        {
             variableMod = new IntegerVariableMod();
-        }
 
         if (!(variableMod is IntegerVariableMod integerMod))
+            return;
+
+        // Handle expression mode first
+        if (integerMod.ModType == VariableModType.MathExpression)
         {
+            optNumericExpression.Checked = true;
+            txtExpression.Text = integerMod.Expression ?? string.Empty;
+            UpdateNumericFormElements();
             return;
         }
 
@@ -289,7 +296,6 @@ public partial class EventCommandVariable : UserControl
         optNumericDivide.Checked = VariableModUtils.DivideMods.Contains(integerMod.ModType);
         optNumericLeftShift.Checked = VariableModUtils.LShiftMods.Contains(integerMod.ModType);
         optNumericRightShift.Checked = VariableModUtils.RShiftMods.Contains(integerMod.ModType);
-
         optNumericSystemTime.Checked = integerMod.ModType == VariableModType.SystemTime;
 
         if (integerMod.ModType == VariableModType.Random)
@@ -303,8 +309,10 @@ public partial class EventCommandVariable : UserControl
     private void UpdateNumericFormElements()
     {
         grpNumericRandom.Visible = optNumericRandom.Checked;
-        grpNumericValues.Visible = optNumericAdd.Checked | optNumericSubtract.Checked | optNumericSet.Checked | optNumericMultiply.Checked |
-                                   optNumericDivide.Checked | optNumericLeftShift.Checked | optNumericRightShift.Checked;
+        grpNumericValues.Visible = optNumericAdd.Checked || optNumericSubtract.Checked || optNumericSet.Checked ||
+                                optNumericMultiply.Checked || optNumericDivide.Checked ||
+                                optNumericLeftShift.Checked || optNumericRightShift.Checked;
+        grpExpression.Visible = optNumericExpression.Checked;
     }
 
     private void optNumericSet_CheckedChanged(object sender, EventArgs e)
@@ -354,12 +362,26 @@ public partial class EventCommandVariable : UserControl
         UpdateNumericFormElements();
     }
 
+    private void optNumericExpression_CheckedChanged(object sender, EventArgs e)
+    {
+        ResetSettingVariableSelection();
+        UpdateNumericFormElements();
+    }
+
     private IntegerVariableMod GetNumericVariableMod()
     {
         var mod = new IntegerVariableMod()
         {
             DuplicateVariableId = mSettingVariableId
         };
+
+        // Expression mode
+        if (optNumericExpression.Checked)
+        {
+            mod.ModType = VariableModType.MathExpression;
+            mod.Expression = txtExpression.Text.Trim();
+            return mod;
+        }
 
         mod.Value = optNumericRandom.Checked ? (int)nudLow.Value : (int)nudNumericValue.Value;
 

@@ -77,6 +77,10 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             grpStringSet = new DarkGroupBox();
             lblStringValue = new Label();
             txtStringValue = new DarkTextBox();
+            optNumericExpression = new DarkRadioButton();
+            grpExpression = new DarkGroupBox();
+            txtExpression = new DarkTextBox();
+            lblExpressionHint = new Label();
             grpSetVariable.SuspendLayout();
             grpSelectVariable.SuspendLayout();
             grpSettingVariable.SuspendLayout();
@@ -90,6 +94,7 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             grpStringVariable.SuspendLayout();
             grpStringReplace.SuspendLayout();
             grpStringSet.SuspendLayout();
+            grpExpression.SuspendLayout();
             SuspendLayout();
             // 
             // grpSetVariable
@@ -295,6 +300,57 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             optBooleanFalse.Text = "False";
             optBooleanFalse.CheckedChanged += optBooleanFalse_CheckedChanged;
             // 
+            // optNumericExpression
+            // 
+            optNumericExpression.AutoSize = true;
+            optNumericExpression.Location = new System.Drawing.Point(10, 72);
+            optNumericExpression.Margin = new Padding(4, 3, 4, 3);
+            optNumericExpression.Name = "optNumericExpression";
+            optNumericExpression.Size = new Size(80, 19);
+            optNumericExpression.TabIndex = 44;
+            optNumericExpression.Text = "Expression";
+            optNumericExpression.CheckedChanged += optNumericExpression_CheckedChanged;
+            // 
+            // grpExpression
+            // 
+            grpExpression.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+            grpExpression.BorderColor = System.Drawing.Color.FromArgb(90, 90, 90);
+            grpExpression.Controls.Add(txtExpression);
+            grpExpression.Controls.Add(lblExpressionHint);
+            grpExpression.ForeColor = System.Drawing.Color.Gainsboro;
+            grpExpression.Location = new System.Drawing.Point(7, 97);
+            grpExpression.Margin = new Padding(4, 3, 4, 3);
+            grpExpression.Name = "grpExpression";
+            grpExpression.Padding = new Padding(4, 3, 4, 3);
+            grpExpression.Size = new Size(331, 64);
+            grpExpression.TabIndex = 45;
+            grpExpression.TabStop = false;
+            grpExpression.Text = "Expression";
+            grpExpression.Visible = false;
+            // 
+            // txtExpression
+            // 
+            txtExpression.BackColor = System.Drawing.Color.FromArgb(69, 73, 74);
+            txtExpression.BorderStyle = BorderStyle.FixedSingle;
+            txtExpression.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            txtExpression.Location = new System.Drawing.Point(7, 18);
+            txtExpression.Margin = new Padding(4, 3, 4, 3);
+            txtExpression.Name = "txtExpression";
+            txtExpression.Size = new Size(317, 23);
+            txtExpression.TabIndex = 0;
+            // 
+            // lblExpressionHint
+            // 
+            lblExpressionHint.AutoSize = true;
+            lblExpressionHint.ForeColor = System.Drawing.Color.FromArgb(140, 140, 140);
+            lblExpressionHint.Location = new System.Drawing.Point(7, 44);
+            lblExpressionHint.Margin = new Padding(4, 0, 4, 0);
+            lblExpressionHint.Name = "lblExpressionHint";
+            lblExpressionHint.Size = new Size(280, 15);
+            lblExpressionHint.TabIndex = 1;
+            lblExpressionHint.Text = @"e.g. pow(\pv{level}, 3) * 8  |  \sv{name}  \gv{name}  \uv{name}";
+            //
+            // 
             // grpNumericVariable
             // 
             grpNumericVariable.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
@@ -308,14 +364,16 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             grpNumericVariable.Controls.Add(optNumericRandom);
             grpNumericVariable.Controls.Add(optNumericSubtract);
             grpNumericVariable.Controls.Add(optNumericSystemTime);
+            grpNumericVariable.Controls.Add(optNumericExpression);
             grpNumericVariable.Controls.Add(grpNumericValues);
             grpNumericVariable.Controls.Add(grpNumericRandom);
+            grpNumericVariable.Controls.Add(grpExpression);
             grpNumericVariable.ForeColor = System.Drawing.Color.Gainsboro;
             grpNumericVariable.Location = new System.Drawing.Point(7, 117);
             grpNumericVariable.Margin = new Padding(4, 3, 4, 3);
             grpNumericVariable.Name = "grpNumericVariable";
             grpNumericVariable.Padding = new Padding(4, 3, 4, 3);
-            grpNumericVariable.Size = new Size(345, 182);
+            grpNumericVariable.Size = new Size(345, 220);
             grpNumericVariable.TabIndex = 3;
             grpNumericVariable.TabStop = false;
             grpNumericVariable.Text = "Numeric Variable:";
@@ -426,7 +484,7 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             grpNumericValues.Controls.Add(nudNumericValue);
             grpNumericValues.Controls.Add(optNumericStaticVal);
             grpNumericValues.ForeColor = System.Drawing.Color.Gainsboro;
-            grpNumericValues.Location = new System.Drawing.Point(7, 75);
+            grpNumericValues.Location = new System.Drawing.Point(7, 97);
             grpNumericValues.Margin = new Padding(4, 3, 4, 3);
             grpNumericValues.Name = "grpNumericValues";
             grpNumericValues.Padding = new Padding(4, 3, 4, 3);
@@ -480,7 +538,7 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             grpNumericRandom.Controls.Add(lblNumericRandomHigh);
             grpNumericRandom.Controls.Add(lblNumericRandomLow);
             grpNumericRandom.ForeColor = System.Drawing.Color.Gainsboro;
-            grpNumericRandom.Location = new System.Drawing.Point(7, 85);
+            grpNumericRandom.Location = new System.Drawing.Point(7, 97);
             grpNumericRandom.Margin = new Padding(4, 3, 4, 3);
             grpNumericRandom.Name = "grpNumericRandom";
             grpNumericRandom.Padding = new Padding(4, 3, 4, 3);
@@ -721,6 +779,8 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             grpStringReplace.PerformLayout();
             grpStringSet.ResumeLayout(false);
             grpStringSet.PerformLayout();
+            grpExpression.ResumeLayout(false);
+            grpExpression.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -778,5 +838,9 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
         private Label lblSettingVarCurrentValue;
         private DarkButton btnSettingVariableSelector;
         internal DarkRadioButton rdoVariableValue;
+        internal DarkRadioButton optNumericExpression;
+        private DarkGroupBox grpExpression;
+        private DarkTextBox txtExpression;
+        private Label lblExpressionHint;
     }
 }

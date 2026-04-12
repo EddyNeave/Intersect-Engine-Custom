@@ -12,4 +12,7 @@ public partial class IntegerVariableMod : VariableMod
 
     [JsonProperty("DupVariableId")]
     public Guid DuplicateVariableId { get; set; }
+
+    // New: used when ModType == MathExpression
+    public string Expression { get; set; } = string.Empty;
 }

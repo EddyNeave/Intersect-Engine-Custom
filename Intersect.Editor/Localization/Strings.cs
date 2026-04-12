@@ -3381,6 +3381,10 @@ Tick timer saved in server config.json.";
 
         public static LocalizedString numericsystemtime = @"System Time (ms)";
 
+        public static LocalizedString numericexpression = @"Expression";
+
+        public static LocalizedString numericexpressionhint = @"e.g. pow(\pv{level}, 3) * 8  |  \sv{name}  \gv{name}  \uv{name}";
+
         public static LocalizedString stringlabel = @"String Variable:";
 
         public static LocalizedString stringset = @"Set";

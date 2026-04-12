@@ -2192,6 +2192,9 @@ public static partial class CommandProcessing
                 }
 
                 break;
+            case VariableModType.MathExpression:
+                value.Integer = ExpressionEvaluator.Evaluate(mod.Expression, player);
+                break;
         }
 
         var changed = value.Integer != originalValue;

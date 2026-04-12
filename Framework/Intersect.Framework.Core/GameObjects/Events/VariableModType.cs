@@ -107,4 +107,7 @@ public enum VariableModType
 
     [RelatedVariableType(VariableType.UserVariable)]
     RightShiftUserVariable,
+
+    // New: math expression mod type
+    MathExpression,
 }
