@@ -15,7 +15,7 @@ namespace Intersect.Client.Framework.Gwen.Control;
 /// </summary>
 public partial class RichLabel : Base
 {
-    private readonly string[] _newlines = new[]{ Environment.NewLine, "\n" }.Distinct().ToArray();
+    private readonly string[] _newlines = new[]{ Environment.NewLine, "\n", "\\n" }.Distinct().ToArray();
     private readonly List<TextBlock> _textBlocks = [];
     private readonly List<Label> _formattedLabels = [];
 

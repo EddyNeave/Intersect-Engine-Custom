@@ -116,9 +116,10 @@ namespace Intersect.Editor.Forms.Editors.Events.Event_Commands
             this.txtShowText.Location = new System.Drawing.Point(7, 38);
             this.txtShowText.Multiline = true;
             this.txtShowText.Name = "txtShowText";
-            this.txtShowText.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
+            this.txtShowText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtShowText.Size = new System.Drawing.Size(234, 100);
             this.txtShowText.TabIndex = 22;
+            this.txtShowText.AcceptsReturn = true;
             // 
             // lblText
             // 

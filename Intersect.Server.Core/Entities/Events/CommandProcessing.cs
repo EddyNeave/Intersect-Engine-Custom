@@ -1826,6 +1826,7 @@ public static partial class CommandProcessing
             var time = Time.GetTime();
             var replacements = new Dictionary<string, string>()
             {
+                { "\\n", "\n" },  // line break
                 { Strings.Events.PlayerNameCommand, player.Name },
                 { Strings.Events.PlayerGuildCommand, player.Guild?.Name ?? "" },
                 { Strings.Events.TimeHour, Time.Hour },
