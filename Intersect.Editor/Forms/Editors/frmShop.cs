@@ -23,6 +23,8 @@ public partial class FrmShop : EditorForm
 
     private List<string> mKnownFolders = new List<string>();
 
+    private List<Guid> mCurrencyDropdownIds = new List<Guid>();
+
     public FrmShop()
     {
         ApplyHooks();
@@ -93,9 +95,10 @@ public partial class FrmShop : EditorForm
         cmbDefaultCurrency.Items.Clear();
         cmbAddBoughtItem.Items.AddRange(ItemDescriptor.Names);
         cmbAddSoldItem.Items.AddRange(ItemDescriptor.Names);
-        cmbBuyFor.Items.AddRange(ItemDescriptor.Names);
-        cmbSellFor.Items.AddRange(ItemDescriptor.Names);
-        cmbDefaultCurrency.Items.AddRange(ItemDescriptor.Names);
+        var currencyFirstNames = BuildCurrencyFirstItemList(out mCurrencyDropdownIds);
+        cmbBuyFor.Items.AddRange(currencyFirstNames);
+        cmbSellFor.Items.AddRange(currencyFirstNames);
+        cmbDefaultCurrency.Items.AddRange(currencyFirstNames);
         if (cmbAddBoughtItem.Items.Count > 0)
         {
             cmbAddBoughtItem.SelectedIndex = 0;
@@ -177,7 +180,7 @@ public partial class FrmShop : EditorForm
 
             txtName.Text = mEditorItem.Name;
             cmbFolder.Text = mEditorItem.Folder;
-            cmbDefaultCurrency.SelectedIndex = ItemDescriptor.ListIndex(mEditorItem.DefaultCurrencyId);
+            cmbDefaultCurrency.SelectedIndex = CurrencyListIndexOf(mEditorItem.DefaultCurrencyId);
             if (mEditorItem.BuyingWhitelist)
             {
                 rdoBuyWhitelist.Checked = true;
@@ -286,10 +289,11 @@ public partial class FrmShop : EditorForm
 
     private void btnAddSoldItem_Click(object sender, EventArgs e)
     {
+        if (CurrencyListIdAt(cmbSellFor.SelectedIndex) == Guid.Empty) return;
         var addedItem = false;
         var cost = (int) nudSellCost.Value;
         var newItem = new ShopItemDescriptor(
-            ItemDescriptor.IdFromList(cmbAddSoldItem.SelectedIndex), ItemDescriptor.IdFromList(cmbSellFor.SelectedIndex), cost
+            ItemDescriptor.IdFromList(cmbAddSoldItem.SelectedIndex), CurrencyListIdAt(cmbSellFor.SelectedIndex), cost
         );
 
         for (var i = 0; i < mEditorItem.SellingItems.Count; i++)
@@ -323,10 +327,11 @@ public partial class FrmShop : EditorForm
 
     private void btnAddBoughtItem_Click(object sender, EventArgs e)
     {
+        if (CurrencyListIdAt(cmbBuyFor.SelectedIndex) == Guid.Empty) return;
         var addedItem = false;
         var cost = (int) nudBuyAmount.Value;
         var newItem = new ShopItemDescriptor(
-            ItemDescriptor.IdFromList(cmbAddBoughtItem.SelectedIndex), ItemDescriptor.IdFromList(cmbBuyFor.SelectedIndex), cost
+            ItemDescriptor.IdFromList(cmbAddBoughtItem.SelectedIndex), CurrencyListIdAt(cmbBuyFor.SelectedIndex), cost
         );
 
         for (var i = 0; i < mEditorItem.BuyingItems.Count; i++)
@@ -360,7 +365,9 @@ public partial class FrmShop : EditorForm
 
     private void cmbDefaultCurrency_SelectedIndexChanged(object sender, EventArgs e)
     {
-        mEditorItem.DefaultCurrency = ItemDescriptor.FromList(cmbDefaultCurrency.SelectedIndex);
+        var id = CurrencyListIdAt(cmbDefaultCurrency.SelectedIndex);
+        if (id != Guid.Empty)
+            mEditorItem.DefaultCurrency = ItemDescriptor.Get(id);
     }
 
     private void btnItemUp_Click(object sender, EventArgs e)
@@ -500,6 +507,57 @@ public partial class FrmShop : EditorForm
         var items = ShopDescriptor.Lookup.OrderBy(p => p.Value?.Name).Select(pair => new KeyValuePair<Guid, KeyValuePair<string, string>>(pair.Key,
             new KeyValuePair<string, string>(((ShopDescriptor)pair.Value)?.Name ?? Models.DatabaseObject<ShopDescriptor>.Deleted, ((ShopDescriptor)pair.Value)?.Folder ?? ""))).ToArray();
         lstGameObjects.Repopulate(items, mFolders, btnAlphabetical.Checked, CustomSearch(), txtSearch.Text);
+    }
+
+    private string[] BuildCurrencyFirstItemList(out List<Guid> orderedIds)
+    {
+        var currencies = ItemDescriptor.Lookup.Values
+            .OfType<ItemDescriptor>()
+            .Where(i => i.ItemType == ItemType.Currency)
+            .OrderBy(i => i.Name)
+            .ToList();
+
+        var others = ItemDescriptor.Lookup.Values
+            .OfType<ItemDescriptor>()
+            .Where(i => i.ItemType != ItemType.Currency)
+            .OrderBy(i => i.Name)
+            .ToList();
+
+        orderedIds = new List<Guid>();
+        var names = new List<string>();
+
+        foreach (var item in currencies)
+        {
+            orderedIds.Add(item.Id);
+            names.Add(item.Name);
+        }
+
+        if (currencies.Count > 0 && others.Count > 0)
+        {
+            orderedIds.Add(Guid.Empty); // separator slot
+            names.Add("--- Other Items ---");
+        }
+
+        foreach (var item in others)
+        {
+            orderedIds.Add(item.Id);
+            names.Add(item.Name);
+        }
+
+        return names.ToArray();
+    }
+
+    private int CurrencyListIndexOf(Guid id)
+    {
+        var idx = mCurrencyDropdownIds.IndexOf(id);
+        return idx < 0 ? 0 : idx;
+    }
+
+    private Guid CurrencyListIdAt(int index)
+    {
+        if (index < 0 || index >= mCurrencyDropdownIds.Count)
+            return Guid.Empty;
+        return mCurrencyDropdownIds[index];
     }
 
     private void btnAddFolder_Click(object sender, EventArgs e)
