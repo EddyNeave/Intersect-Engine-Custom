@@ -11,17 +11,5 @@ public enum DatabaseType
 
     Sqlite = SQLite,
 
-    sqlite = SQLite,
-
-    MySQL,
-
-    MySql = MySQL,
-
-    Mysql = MySQL,
-
-    mysql = MySQL,
-
-    MariaDB = MySQL,
-
-    mariadb = MariaDB,
+    sqlite = SQLite
 }

@@ -51,7 +51,6 @@ public partial class IntersectDbContext<TDbContext>
 
         var dbContextConcreteType = databaseType switch
         {
-            DatabaseType.MySql => dbContextAbstractType.FindConcreteType(type => type.Extends<IMySqlDbContext>(), allLoadedAssemblies: true),
             DatabaseType.Sqlite => dbContextAbstractType.FindConcreteType(type => type.Extends<ISqliteDbContext>()),
             _ => throw new ArgumentOutOfRangeException(nameof(databaseType), databaseType, null),
         };

@@ -7,7 +7,6 @@ using Intersect.Framework.Core.GameObjects.Events.Commands;
 using Intersect.Framework.Core.Serialization;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using MySqlConnector;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using MapAttribute = Intersect.Framework.Core.GameObjects.Maps.MapAttribute;
@@ -92,11 +91,6 @@ public static partial class Beta6Migration
                     {
                         updateCmd.Parameters.Add(new SqliteParameter("@Id" + i, update.Key));
                         updateCmd.Parameters.Add(new SqliteParameter("@json" + i, update.Value));
-                    }
-                    else
-                    {
-                        updateCmd.Parameters.Add(new MySqlParameter("@Id" + i, update.Key));
-                        updateCmd.Parameters.Add(new MySqlParameter("@json" + i, update.Value));
                     }
 
                     i++;
@@ -611,12 +605,6 @@ public static partial class Beta6Migration
                         updateCmd.Parameters.Add(new SqliteParameter("@Id" + i, (object) update.Item1));
                         updateCmd.Parameters.Add(new SqliteParameter("@Attributes" + i, (byte[]) update.Item2));
                         updateCmd.Parameters.Add(new SqliteParameter("@TileData" + i, (byte[]) update.Item3));
-                    }
-                    else
-                    {
-                        updateCmd.Parameters.Add(new MySqlParameter("@Id" + i, (object) update.Item1));
-                        updateCmd.Parameters.Add(new MySqlParameter("@Attributes" + i, (byte[]) update.Item2));
-                        updateCmd.Parameters.Add(new MySqlParameter("@TileData" + i, (byte[]) update.Item3));
                     }
 
                     i++;

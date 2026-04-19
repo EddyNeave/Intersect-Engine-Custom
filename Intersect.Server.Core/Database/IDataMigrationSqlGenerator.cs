@@ -12,7 +12,6 @@ public interface IDataMigrationSqlGenerator
         {
             DatabaseType.Unknown => throw new NotImplementedException(),
             DatabaseType.SQLite => new SqliteCompiler(),
-            DatabaseType.MySQL => new MySqlCompiler(),
             _ => throw new ArgumentOutOfRangeException(nameof(databaseType), databaseType, null)
         };
 }

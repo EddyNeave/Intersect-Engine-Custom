@@ -11,16 +11,12 @@ public static partial class MigrationBuilderExtensions
 
     public static DatabaseType GetDatabaseType(this MigrationBuilder migrationBuilder)
     {
-        switch (migrationBuilder.ActiveProvider)
+        if (migrationBuilder.ActiveProvider?.ToLowerInvariant().Contains("sqlite") ?? false)
         {
-            default:
-                if (migrationBuilder.ActiveProvider?.ToLowerInvariant().Contains("sqlite") ?? false)
-                {
-                    return DatabaseType.SQLite;
-                }
-
-                return DatabaseType.MySQL;
+            return DatabaseType.SQLite;
         }
+
+        throw new NotSupportedException($"Unsupported database provider: {migrationBuilder.ActiveProvider}");
     }
 
     /// <summary>

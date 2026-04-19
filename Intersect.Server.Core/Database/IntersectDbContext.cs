@@ -112,11 +112,8 @@ public abstract partial class IntersectDbContext<TDbContext> : DbContext, IDbCon
             case DatabaseType.SQLite:
                 optionsBuilder.UseSqlite(connectionString);
                 break;
-
             case DatabaseType.Unknown:
                 throw new NotSupportedException();
-
-            case DatabaseType.MySQL:
             default:
                 OnConfiguringProvider(optionsBuilder, connectionString);
                 break;
@@ -134,9 +131,6 @@ public abstract partial class IntersectDbContext<TDbContext> : DbContext, IDbCon
 
         switch (DatabaseType)
         {
-            case DatabaseType.MySql:
-                configurationBuilder.Properties<Guid>().HaveColumnType("char(36)").UseCollation("ascii_general_ci");
-                break;
             case DatabaseType.SQLite:
                 break;
             case DatabaseType.Unknown:
@@ -158,7 +152,6 @@ public abstract partial class IntersectDbContext<TDbContext> : DbContext, IDbCon
             command.CommandText = DatabaseType switch
             {
                 DatabaseType.SQLite => "SELECT name FROM sqlite_master WHERE type='table';",
-                DatabaseType.MySQL => "show tables;",
                 DatabaseType.Unknown => throw new DatabaseTypeInvalidException(DatabaseType),
                 _ => throw new UnreachableException(),
             };

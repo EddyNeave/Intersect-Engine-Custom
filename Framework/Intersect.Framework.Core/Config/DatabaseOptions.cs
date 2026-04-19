@@ -2,6 +2,7 @@
 using Intersect.Framework.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Intersect.Framework.Core.Serialization;
 
 namespace Intersect.Config;
 
@@ -14,7 +15,7 @@ public partial class DatabaseOptions
     private const bool DefaultKillServerOnConcurrencyException = false;
 #endif
 
-    [JsonConverter(typeof(StringEnumConverter))]
+   [JsonConverter(typeof(SafeStringEnumConverter))]
     public DatabaseType Type { get; set; } = DatabaseType.SQLite;
 
     /// <summary>

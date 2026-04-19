@@ -5,7 +5,6 @@ using Intersect.Framework.Core.Serialization;
 using Intersect.Network;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using MySqlConnector;
 using Newtonsoft.Json;
 
 namespace Intersect.Server.Database.GameData.Migrations;
@@ -139,12 +138,6 @@ public partial class CerasVersionToleranceMigration
                         updateCmd.Parameters.Add(new SqliteParameter("@Id" + i, (object)update.Item1));
                         updateCmd.Parameters.Add(new SqliteParameter("@Attributes" + i, (byte[])update.Item2));
                         updateCmd.Parameters.Add(new SqliteParameter("@TileData" + i, (byte[])update.Item3));
-                    }
-                    else
-                    {
-                        updateCmd.Parameters.Add(new MySqlParameter("@Id" + i, (object)update.Item1));
-                        updateCmd.Parameters.Add(new MySqlParameter("@Attributes" + i, (byte[])update.Item2));
-                        updateCmd.Parameters.Add(new MySqlParameter("@TileData" + i, (byte[])update.Item3));
                     }
 
                     i++;

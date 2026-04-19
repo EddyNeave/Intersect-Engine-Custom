@@ -2,7 +2,6 @@ using System.Data.Common;
 using Intersect.Config;
 using Intersect.Server.Localization;
 using Microsoft.Data.Sqlite;
-using MySqlConnector;
 using SqlKata.Compilers;
 
 namespace Intersect.Server.Database;
@@ -16,14 +15,6 @@ internal static class DatabaseTypeExtensions
     ) => databaseType switch
     {
         DatabaseType.SQLite => new SqliteConnectionStringBuilder($"Data Source={filename}"),
-        DatabaseType.MySQL => new MySqlConnectionStringBuilder
-        {
-            Server = databaseOptions.Server ?? "localhost",
-            Port = databaseOptions.Port,
-            Database = databaseOptions.Database ?? throw new InvalidOperationException($"{nameof(DatabaseOptions.Database)} cannot be null"),
-            UserID = databaseOptions.Username ?? "root",
-            Password = databaseOptions.Password ?? throw new InvalidOperationException($"{nameof(DatabaseOptions.Password)} cannot be null"),
-        },
         DatabaseType.Unknown => throw new DatabaseTypeInvalidException(databaseType),
         _ => throw new ArgumentOutOfRangeException(nameof(databaseType)),
     };
@@ -32,10 +23,8 @@ internal static class DatabaseTypeExtensions
         databaseType switch
         {
             DatabaseType.SQLite => new SqliteCompiler(),
-            DatabaseType.MySQL => new MySqlCompiler(),
             _ => throw new NotImplementedException(),
         };
-
 
     public static string GetName(this DatabaseType databaseType) =>
         Strings.Database.DatabaseTypes.TryGetValue(databaseType, out var name)

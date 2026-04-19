@@ -6,6 +6,7 @@ using Intersect.Server.Core;
 using Intersect.Server.Networking.Helpers;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Intersect.Framework.Core.Serialization;
 
 namespace Intersect.Server.Localization;
 
@@ -503,8 +504,7 @@ public static partial class Strings
         public readonly LocaleDictionary<DatabaseType, LocalizedString> DatabaseTypes = new(
             new Dictionary<DatabaseType, LocalizedString>
             {
-            { DatabaseType.Sqlite, "SQLite" },
-            { DatabaseType.MySql, "MySql" }
+            { DatabaseType.Sqlite, "SQLite" }
             }
         );
 
@@ -1355,7 +1355,7 @@ public static partial class Strings
             var json = File.ReadAllText(filepath, Encoding.UTF8);
             try
             {
-                Root = JsonConvert.DeserializeObject<RootNamespace>(json) ?? Root;
+                Root = JsonConvert.DeserializeObject<RootNamespace>(json, new SafeStringEnumConverter()) ?? Root;
             }
             catch (Exception exception)
             {
@@ -1365,6 +1365,8 @@ public static partial class Strings
                         "Server strings invalid! Upgrade steps to B6 were not followed correctly. Server must close!"
                     );
                 }
+
+                File.WriteAllText("strings_error.txt", exception.ToString());
 
                 ApplicationContext.Context.Value?.Logger.LogError(exception, "Failed to deserialize strings");
 

@@ -39,7 +39,6 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
-using MySqlConnector;
 using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;
@@ -195,16 +194,6 @@ public static partial class DbInterface
         {
             case DatabaseType.SQLite:
                 return new SqliteConnectionStringBuilder($"Data Source={filename}");
-
-            case DatabaseType.MySQL:
-                return new MySqlConnectionStringBuilder
-                {
-                    Server = databaseOptions.Server,
-                    Port = databaseOptions.Port,
-                    Database = databaseOptions.Database,
-                    UserID = databaseOptions.Username,
-                    Password = databaseOptions.Password
-                };
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(databaseOptions.Type));
@@ -386,7 +375,7 @@ public static partial class DbInterface
 
             Console.WriteLine();
             Console.WriteLine(
-                "Please wait! Migrations can take several minutes, and even longer if you are using MySQL databases!"
+                "Please wait! Migrations can take several minutes"
             );
         }
         else
@@ -2044,7 +2033,7 @@ public static partial class DbInterface
 
         var (selectedContextType, selectedOptions, selectedDatabaseName) = databases[selectedDatabaseIndex - 1];
 
-        var databaseTypes = new List<DatabaseType> { DatabaseType.Sqlite, DatabaseType.MySql };
+        var databaseTypes = new List<DatabaseType> { DatabaseType.Sqlite };
 
         Console.WriteLine();
         Console.WriteLine(Strings.Migration.SelectProvider.ToString(selectedDatabaseName));
@@ -2158,103 +2147,6 @@ public static partial class DbInterface
         DatabaseContextOptions toContextOptions;
         switch (toDatabaseType)
         {
-            case DatabaseType.MySql:
-                {
-                    while (true)
-                    {
-                        Console.WriteLine(Strings.Migration.EnterConnectionStringParameters);
-
-                        Console.Write(Strings.Migration.PromptHost.ToString(Strings.Migration.DefaultHost));
-                        var host = Console.ReadLine()?.Trim();
-                        if (string.IsNullOrWhiteSpace(host))
-                        {
-                            host = Strings.Migration.DefaultHost;
-                        }
-
-                        Console.Write(Strings.Migration.PromptPort.ToString(Strings.Migration.DefaultPortMySql));
-                        var portString = Console.ReadLine()?.Trim();
-                        if (string.IsNullOrWhiteSpace(portString))
-                        {
-                            portString = Strings.Migration.DefaultPortMySql;
-                        }
-                        var port = ushort.Parse(portString);
-
-                        var contextName = typeof(TContext).Name.Replace("Context", "").ToLowerInvariant();
-                        var version = typeof(DbInterface).Assembly.GetVersionName();
-                        var defaultDatabase = Strings.Migration.DefaultDatabase.ToString(version, contextName);
-                        Console.Write(Strings.Migration.PromptDatabase.ToString(defaultDatabase));
-                        var database = Console.ReadLine()?.Trim();
-                        if (string.IsNullOrWhiteSpace(database))
-                        {
-                            database = defaultDatabase;
-                        }
-
-                        Console.Write(Strings.Migration.PromptUsername.ToString(Strings.Migration.DefaultUsername));
-                        var username = Console.ReadLine().Trim();
-                        if (string.IsNullOrWhiteSpace(username))
-                        {
-                            username = Strings.Migration.DefaultUsername;
-                        }
-
-                        Console.Write(Strings.Migration.PromptPassword);
-                        var password = GetPassword();
-
-                        Console.WriteLine();
-                        Console.WriteLine(Strings.Migration.MySqlConnecting);
-
-                        toDatabaseOptions = new()
-                        {
-                            Type = toDatabaseType,
-                            Server = host,
-                            Port = port,
-                            Database = database,
-                            Username = username,
-                            Password = password,
-                            LogLevel = fromDatabaseOptions.LogLevel,
-                        };
-                        toContextOptions = new()
-                        {
-                            ConnectionStringBuilder = toDatabaseType.CreateConnectionStringBuilder(
-                                toDatabaseOptions,
-                                default
-                            ),
-                            DatabaseType = toDatabaseType,
-                            LoggerFactory = CreateLoggerFactory<TContext>(toDatabaseOptions),
-                        };
-
-                        try
-                        {
-                            await using var testContext = IntersectDbContext<TContext>.Create(toContextOptions);
-                            break;
-                        }
-                        catch (Exception exception)
-                        {
-                            ApplicationContext.Context.Value?.Logger.LogError(Strings.Migration.MySqlConnectionError.ToString(exception));
-                            Console.WriteLine();
-                            Console.WriteLine(Strings.Migration.MySqlTryAgain);
-                            var input = Console.ReadLine();
-                            var key = input.Length > 0 ? input[0] : ' ';
-                            Console.WriteLine();
-
-                            var shouldTryAgain = string.Equals(
-                                Strings.Migration.TryAgainCharacter,
-                                key.ToString(),
-                                StringComparison.Ordinal
-                            );
-
-                            if (shouldTryAgain)
-                            {
-                                continue;
-                            }
-
-                            ApplicationContext.Context.Value?.Logger.LogInformation(Strings.Migration.MigrationCanceled);
-                            return;
-                        }
-                    }
-
-                    break;
-                }
-
             case DatabaseType.Sqlite:
                 {
                     string dbFileName;

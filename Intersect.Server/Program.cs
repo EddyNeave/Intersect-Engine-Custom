@@ -9,7 +9,6 @@ using Intersect.Server.Database;
 using Intersect.Server.Networking;
 using Intersect.Server.Networking.LiteNetLib;
 using Microsoft.Data.Sqlite;
-using MySqlConnector;
 
 namespace Intersect.Server;
 
@@ -107,7 +106,6 @@ internal static class Program
             var connectionString = hostContext.Configuration.GetValue<string>("ConnectionString");
             DbConnectionStringBuilder connectionStringBuilder = databaseType switch
             {
-                DatabaseType.MySql => new MySqlConnectionStringBuilder(connectionString),
                 DatabaseType.Sqlite => new SqliteConnectionStringBuilder(connectionString),
                 DatabaseType.Unknown => throw new DatabaseTypeInvalidException(databaseType),
                 _ => throw new IndexOutOfRangeException($"Unsupported database type: {databaseType}"),
